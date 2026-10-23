@@ -1,0 +1,11 @@
+.venv/
+backend/.venv/
+.env
+.ENV
+backend/.ENV
+backend/.env
+*.db
+__pycache__/
+*.pyc
+Front End/
+_xd_extract/

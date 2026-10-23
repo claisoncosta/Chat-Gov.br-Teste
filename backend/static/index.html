@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AUDITA Chat</title>
+  <link rel="stylesheet" href="https://cdngovbr-ds.estaleiro.serpro.gov.br/design-system/fonts/rawline/css/rawline.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govbr-ds/core@3.7.0/dist/core.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="br-skiplink" href="#composer">Ir para o campo de mensagem</a>
+
+  <section class="login-screen" id="login-screen">
+    <div class="br-card login-card">
+      <div class="card-header">
+        <img src="https://www.gov.br/ds/assets/img/govbr-logo.png" alt="gov.br">
+        <p class="text-weight-semi-bold">AUDITA Chat</p>
+      </div>
+      <div class="card-content">
+        <form id="login-form">
+          <div class="br-input">
+            <label for="username">Usuário</label>
+            <input id="username" type="text" autocomplete="username" required>
+          </div>
+          <div class="br-input">
+            <label for="password">Senha</label>
+            <input id="password" type="password" autocomplete="current-password" required>
+          </div>
+          <p class="login-error" id="login-error" hidden></p>
+          <button class="br-button primary block" type="button" id="login-submit">Entrar</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" hidden>
+
+  <header class="br-header compact" id="header" data-sticky>
+    <div class="container-fluid">
+      <div class="header-top">
+        <div class="header-logo">
+          <img src="https://www.gov.br/ds/assets/img/govbr-logo.png" alt="gov.br">
+          <span class="br-divider vertical mx-half mx-sm-1"></span>
+          <div class="header-sign">AUDITA</div>
+        </div>
+        <div class="header-actions">
+          <div class="header-links dropdown">
+            <button class="br-button circle small" type="button" data-toggle="dropdown" aria-label="Abrir acesso rápido">
+              <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+            </button>
+            <div class="br-list">
+              <div class="header"><div class="title">Acesso rápido</div></div>
+              <a class="br-item" href="https://www.gov.br" target="_blank" rel="noopener">Órgãos do Governo</a>
+              <a class="br-item" href="https://www.gov.br/acessoainformacao" target="_blank" rel="noopener">Acesso à Informação</a>
+              <a class="br-item" href="https://www.gov.br/ds" target="_blank" rel="noopener">Design System</a>
+            </div>
+          </div>
+          <div class="header-login">
+            <div class="header-sign-in">
+              <span class="user-label" id="user-label"></span>
+              <button class="br-sign-in small" type="button" id="logout">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                <span class="d-sm-inline">Sair</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-bottom">
+        <div class="header-menu">
+          <div class="header-menu-trigger">
+            <button class="br-button small circle" type="button" id="menu-toggle" aria-label="Abrir lista de conversas">
+              <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="header-info">
+            <div class="header-title">AUDITA Chat</div>
+            <div class="header-subtitle">Assistente com identidade GovBR-DS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="chat-shell">
+    <aside class="chat-sidebar" id="sidebar">
+      <button class="br-button primary block" type="button" id="new-chat">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        Nova conversa
+      </button>
+      <p class="sidebar-label">Conversas</p>
+      <nav class="chat-history" id="history" aria-label="Histórico de conversas"></nav>
+    </aside>
+
+    <main class="chat-main">
+      <div class="chat-messages" id="messages"></div>
+
+      <div class="chat-composer">
+        <form id="form">
+          <div class="br-textarea">
+            <label class="sr-only" for="message">Mensagem</label>
+            <textarea id="message" rows="1" placeholder="Envie uma mensagem" required></textarea>
+          </div>
+          <button class="br-button circle primary" type="submit" id="send" aria-label="Enviar">
+            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+          </button>
+        </form>
+        <p class="hint">O assistente pode cometer erros. Confira informações importantes.</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="br-footer">
+    <div class="container-fluid">
+      <div class="info">
+        <div class="text-down-01">Texto público para fins de demonstração. Identidade visual do Padrão Digital de Governo.</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="sidebar-backdrop" id="backdrop" hidden></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@govbr-ds/core@3.7.0/dist/core.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

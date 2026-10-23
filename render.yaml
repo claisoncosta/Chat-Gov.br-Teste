@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: audita-chat
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: uv sync --frozen
+    startCommand: uv run uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.15"
+      - key: OPENROUTER_BASE_URL
+        value: https://openrouter.ai/api/v1
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
