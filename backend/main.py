@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from auth import authenticate, create_token, get_current_user
+from auth import authenticate, create_token, get_current_user, register_user
 from db import init_db
 from models import User
 
@@ -92,6 +92,12 @@ def js_file(filename: str) -> FileResponse:
     if not path.is_file():
         raise HTTPException(status_code=404, detail="Arquivo não encontrado.")
     return FileResponse(path)
+
+
+@app.post("/register", response_model=LoginResponse)
+def register(req: LoginRequest) -> LoginResponse:
+    user = register_user(req.username, req.password)
+    return LoginResponse(token=create_token(user), username=user.username)
 
 
 @app.post("/login", response_model=LoginResponse)

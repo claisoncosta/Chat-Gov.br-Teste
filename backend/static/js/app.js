@@ -221,44 +221,87 @@ function storageKey() {
   return `${STORAGE_KEY}:${sessionStorage.getItem(USER_KEY) || "anon"}`;
 }
 
+const confirmWrap = document.getElementById("confirm-wrap");
+const confirmPassword = document.getElementById("confirm-password");
+const registerSubmit = document.getElementById("register-submit");
+
+async function postAuth(path, extraCheck) {
+  loginError.hidden = true;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  extraCheck?.(username, password);
+  const res = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(formatDetail(data.detail) || "Falha na autenticação.");
+  sessionStorage.setItem(TOKEN_KEY, data.token);
+  sessionStorage.setItem(USER_KEY, data.username);
+  showApp(data.username);
+}
+
 async function doLogin(event) {
   event.preventDefault();
-  loginError.hidden = true;
+  confirmWrap.hidden = true;
   const submit = document.getElementById("login-submit");
   submit.disabled = true;
+  registerSubmit.disabled = true;
   try {
-    const res = await fetch(`${API_URL}login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: document.getElementById("username").value.trim(),
-        password: document.getElementById("password").value,
-      }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(formatDetail(data.detail) || "Falha no login.");
-    sessionStorage.setItem(TOKEN_KEY, data.token);
-    sessionStorage.setItem(USER_KEY, data.username);
-    showApp(data.username);
+    await postAuth("login");
   } catch (err) {
-    const message =
-      err.message === "Failed to fetch"
-        ? "Não foi possível conectar ao servidor. Recarregue a página ou suba a API com uvicorn."
-        : err.message;
-    loginError.textContent = message;
-    loginError.hidden = false;
+    showAuthError(err);
   } finally {
     submit.disabled = false;
+    registerSubmit.disabled = false;
   }
+}
+
+async function doRegister(event) {
+  event.preventDefault();
+  if (confirmWrap.hidden) {
+    confirmWrap.hidden = false;
+    confirmPassword.focus();
+    return;
+  }
+  const submit = document.getElementById("login-submit");
+  submit.disabled = true;
+  registerSubmit.disabled = true;
+  try {
+    await postAuth("register", (_username, password) => {
+      if (password !== confirmPassword.value) {
+        throw new Error("As senhas não coincidem.");
+      }
+    });
+  } catch (err) {
+    showAuthError(err);
+  } finally {
+    submit.disabled = false;
+    registerSubmit.disabled = false;
+  }
+}
+
+function showAuthError(err) {
+  const message =
+    err.message === "Failed to fetch"
+      ? "Não foi possível conectar ao servidor. Recarregue a página."
+      : err.message;
+  loginError.textContent = message;
+  loginError.hidden = false;
 }
 
 loginForm.addEventListener("submit", doLogin);
 document.getElementById("login-submit").addEventListener("click", doLogin);
+registerSubmit.addEventListener("click", doRegister);
 document.getElementById("username").addEventListener("keydown", (event) => {
   if (event.key === "Enter") doLogin(event);
 });
 document.getElementById("password").addEventListener("keydown", (event) => {
   if (event.key === "Enter") doLogin(event);
+});
+confirmPassword.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") doRegister(event);
 });
 
 document.getElementById("logout").addEventListener("click", logout);

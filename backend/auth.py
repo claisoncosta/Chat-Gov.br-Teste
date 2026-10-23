@@ -12,13 +12,32 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import func
 from sqlmodel import select
 
-from db import get_session, verify_password
+from db import get_session, hash_password, verify_password
 from models import User
 
 JWT_SECRET = os.getenv("JWT_SECRET", "audita-dev-change-this-secret-9f3c2a1b")
 JWT_ALG = "HS256"
 TOKEN_HOURS = 12
 bearer = HTTPBearer(auto_error=False)
+
+
+def register_user(username: str, password: str) -> User:
+    name = username.strip()
+    if len(name) < 3:
+        raise HTTPException(status_code=400, detail="O usuário deve ter pelo menos 3 caracteres.")
+    if len(password) < 4:
+        raise HTTPException(status_code=400, detail="A senha deve ter pelo menos 4 caracteres.")
+    with get_session() as session:
+        exists = session.exec(
+            select(User).where(func.lower(User.username) == name.lower())
+        ).first()
+        if exists:
+            raise HTTPException(status_code=409, detail="Este usuário já está cadastrado.")
+        user = User(username=name, password_hash=hash_password(password))
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
 
 
 def authenticate(username: str, password: str) -> User:

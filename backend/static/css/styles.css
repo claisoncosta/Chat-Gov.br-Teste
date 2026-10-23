@@ -71,6 +71,15 @@ body {
   margin: 0 0 12px;
 }
 
+#confirm-wrap[hidden] {
+  display: none !important;
+}
+
+.login-card .br-button.block {
+  width: 100%;
+  margin-top: 8px;
+}
+
 .user-label {
   margin-right: 8px;
   font-weight: 600;
